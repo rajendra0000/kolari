@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kalori - P2P Document Sharing</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/public/session.css" />
+</head>
+<body>
+
+  <!-- Background -->
+  <div class="animated-bg">
+    <div class="floating-shapes">
+      <div class="shape shape-1"></div>
+      <div class="shape shape-2"></div>
+      <div class="shape shape-3"></div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <nav class="navbar navbar-expand-lg glass-navbar">
+    <div class="container">
+      <a class="navbar-brand gradient-text fw-bold" href="/">
+        <i class="fas fa-share-alt me-2"></i>Kalori
+      </a>
+      <div class="navbar-nav ms-auto">
+        <div class="nav-item">
+          <span class="badge status-badge" id="connectionStatus">
+            <i class="fas fa-circle me-1"></i>Connecting...
+          </span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container-fluid py-4">
+    <div class="row justify-content-center">
+      <div class="col-12">
+
+        <!-- Session Info -->
+        <div class="glass-card mb-4">
+          <div class="row align-items-center">
+            <div class="col-md-6">
+              <h2 class="gradient-text mb-2">
+                <i class="fas fa-users me-2"></i>
+                Session: <span id="sessionId" class="session-id"></span>
+              </h2>
+              <p class="text-white-50 mb-0">
+                <i class="fas fa-info-circle me-2"></i>
+                Share this URL with others to collaborate
+              </p>
+            </div>
+            <div class="col-md-6 text-md-end">
+              <div class="user-count-display">
+                <i class="fas fa-user-friends me-2"></i>
+                <span id="userCountDisplay">Current Users: 1</span>
+              </div>
+              <button class="btn btn-outline-light btn-sm mt-2" id="copyUrlBtn">
+                <i class="fas fa-copy me-1"></i>Copy URL
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Waiting State -->
+        <div class="glass-card text-center waiting-state" id="userNotJoinInfo">
+          <div class="waiting-animation">
+            <i class="fas fa-users waiting-icon"></i>
+          </div>
+          <h3 class="text-white mb-3">Waiting for Others to Join</h3>
+          <p class="text-white-50 mb-4">
+            Share the session URL above with your collaborators to start working together
+          </p>
+          <div class="pulse-dots">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+
+        <!-- Main Collaboration Area -->
+        <div class="main-content" style="display: none;">
+          <div class="row">
+            <!-- Editor -->
+            <div class="col-lg-8 mb-4">
+              <div class="glass-card h-100">
+                <div class="card-header">
+                  <h4 class="mb-0">
+                    <i class="fas fa-edit me-2"></i>Collaborative Editor
+                  </h4>
+                </div>
+                <div class="card-body p-0">
+                  <textarea id="editor" class="form-control glass-textarea"
+                    placeholder="Start typing to collaborate with others in real-time..."></textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- File Sharing -->
+            <div class="col-lg-4 mb-4">
+              <div class="glass-card h-100">
+                <div class="card-header">
+                  <h4 class="mb-0">
+                    <i class="fas fa-file-alt me-2"></i>File Sharing
+                  </h4>
+                </div>
+                <div class="card-body">
+                  <!-- Upload Area -->
+                  <div class="upload-section mb-4">
+                    <div class="upload-area" id="uploadArea">
+                      <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                      <p class="mb-2">Drop files here or click to upload</p>
+                      <input type="file" id="fileInput" class="d-none" multiple />
+                      <button class="btn btn-primary btn-sm" id="uploadBtn">
+                        <i class="fas fa-plus me-1"></i>Select Files
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- File Lists -->
+                  <div class="file-sections">
+                    <div class="mb-3">
+                      <h6 class="text-white-50 mb-2">
+                        <i class="fas fa-download me-2"></i>Received Files
+                      </h6>
+                      <div id="receivedFiles" class="file-list">
+                        <div class="empty-state">
+                          <i class="fas fa-inbox"></i>
+                          <span>No files received yet</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h6 class="text-white-50 mb-2">
+                        <i class="fas fa-upload me-2"></i>Sent Files
+                      </h6>
+                      <div id="sentFiles" class="file-list">
+                        <div class="empty-state">
+                          <i class="fas fa-paper-plane"></i>
+                          <span>No files sent yet</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div> <!-- end .file-sections -->
+                </div> <!-- end .card-body -->
+              </div> <!-- end .glass-card -->
+            </div>
+          </div> <!-- end .row -->
+        </div> <!-- end .main-content -->
+
+      </div> <!-- end .col-12 -->
+    </div> <!-- end .row -->
+  </div> <!-- end .container-fluid -->
+
+  <!-- Toasts -->
+  <div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="successToast" class="toast" role="alert">
+      <div class="toast-header">
+        <i class="fas fa-check-circle text-success me-2"></i>
+        <strong class="me-auto">Success</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+      </div>
+      <div class="toast-body"></div>
+    </div>
+
+    <div id="errorToast" class="toast" role="alert">
+      <div class="toast-header">
+        <i class="fas fa-exclamation-circle text-danger me-2"></i>
+        <strong class="me-auto">Error</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+      </div>
+      <div class="toast-body"></div>
+    </div>
+  </div>
+
+  <!-- Bootstrap & JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/public/session.js"></script>
+</body>
+</html>
